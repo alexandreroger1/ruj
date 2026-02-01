@@ -1,0 +1,194 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Will you be my Valentine?</title>
+
+  <style>
+    body{
+      margin:0;
+      min-height:100vh;
+      display:grid;
+      place-items:center;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+      background: linear-gradient(135deg, #ffdde1, #ee9ca7);
+      overflow:hidden;
+    }
+
+    .card{
+      background: rgba(255,255,255,.92);
+      border-radius: 24px;
+      padding: 32px;
+      width: min(720px, 92vw);
+      text-align:center;
+      box-shadow: 0 20px 50px rgba(0,0,0,.2);
+      position:relative;
+      z-index:2;
+    }
+
+    h1{
+      font-size: clamp(28px, 4vw, 44px);
+      margin-bottom: 10px;
+    }
+
+    p{
+      font-size: 17px;
+      opacity:.85;
+    }
+
+    .from{
+      margin-top: 10px;
+      font-weight: 600;
+      opacity: .9;
+    }
+
+    .buttons{
+      margin-top: 26px;
+      display:flex;
+      gap:16px;
+      justify-content:center;
+      flex-wrap:wrap;
+    }
+
+    button{
+      border:none;
+      border-radius:16px;
+      padding:14px 22px;
+      font-size:17px;
+      font-weight:700;
+      cursor:pointer;
+      transition:.2s ease;
+    }
+
+    .yes{
+      background: linear-gradient(135deg, #22c55e, #16a34a);
+      color:white;
+    }
+
+    .no{
+      background: linear-gradient(135deg, #fb7185, #ef4444);
+      color:white;
+    }
+
+    /* BIG THUMBS UP */
+    .thumbs{
+      position:fixed;
+      inset:0;
+      display:grid;
+      place-items:center;
+      font-size: 190px;
+      background: rgba(0,0,0,.35);
+      opacity:0;
+      pointer-events:none;
+      transition: .4s ease;
+      z-index:10;
+    }
+
+    .thumbs.show{
+      opacity:1;
+      pointer-events:auto;
+      animation: pop 0.6s ease;
+    }
+
+    @keyframes pop{
+      0%{ transform: scale(.2) rotate(-20deg); }
+      70%{ transform: scale(1.25) rotate(10deg); }
+      100%{ transform: scale(1) rotate(0); }
+    }
+
+    /* Hidden YouTube player */
+    #player{
+      width:0;
+      height:0;
+      position:absolute;
+      left:-9999px;
+    }
+
+    .share{
+      margin-top:18px;
+      font-size:13px;
+      opacity:.7;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="card">
+    <h1>Rujuta, will you be my Valentine? 💘</h1>
+
+    <p>
+      I really like you and I’d love to make Valentine’s Day special with you.
+      <br/>No pressure… but also… choose wisely 😌
+    </p>
+
+    <div class="from" id="fromText"></div>
+
+    <div class="buttons">
+      <button class="yes" id="yesBtn">Yes 💖</button>
+      <button class="no" id="noBtn">No 🙈</button>
+    </div>
+
+    <div class="share">
+      Shareable link ready 💌
+    </div>
+  </div>
+
+  <!-- BIG THUMBS UP -->
+  <div class="thumbs" id="thumbsUp">👍</div>
+
+  <!-- YouTube player (Get Lucky – Daft Punk) -->
+  <iframe
+    id="player"
+    src="https://www.youtube.com/embed/5NV6Rdv1a3I?enablejsapi=1"
+    frameborder="0"
+    allow="autoplay"
+  ></iframe>
+
+  <script>
+    const noBtn = document.getElementById("noBtn");
+    const yesBtn = document.getElementById("yesBtn");
+    const thumbs = document.getElementById("thumbsUp");
+    const fromText = document.getElementById("fromText");
+
+    // ---- Custom link name ----
+    const params = new URLSearchParams(window.location.search);
+    const from = params.get("from");
+    if (from) {
+      fromText.textContent = `— from ${decodeURIComponent(from)} 💖`;
+    }
+
+    // ---- NO turns into YES ----
+    noBtn.addEventListener("mouseenter", () => {
+      noBtn.textContent = "Yes 💖";
+      noBtn.classList.remove("no");
+      noBtn.classList.add("yes");
+    });
+
+    noBtn.addEventListener("mouseleave", () => {
+      noBtn.textContent = "No 🙈";
+      noBtn.classList.remove("yes");
+      noBtn.classList.add("no");
+    });
+
+    // ---- Play music ----
+    function playMusic() {
+      const iframe = document.getElementById("player");
+      iframe.contentWindow.postMessage(
+        '{"event":"command","func":"playVideo","args":""}',
+        "*"
+      );
+    }
+
+    function celebrate(){
+      thumbs.classList.add("show");
+      playMusic();
+    }
+
+    yesBtn.addEventListener("click", celebrate);
+    noBtn.addEventListener("click", celebrate);
+  </script>
+
+</body>
+</html>
